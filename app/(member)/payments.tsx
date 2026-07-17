@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { usePayments } from '../../lib/hooks/usePayments';
 import { useProfile } from '../../lib/hooks/useProfile';
 import { useDues } from '../../lib/hooks/useDues';
@@ -10,6 +10,8 @@ import { LoadingScreen } from '../../components/ui/LoadingScreen';
 import { Badge, getPaymentStatusVariant } from '../../components/ui/Badge';
 import dayjs from 'dayjs';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import * as Linking from 'expo-linking';
+import { apiClient } from '../../lib/api';
 
 const TEAL_DARK = '#0B4A42';
 const TEAL = '#0F6B5C';
@@ -18,9 +20,12 @@ const CREAM = '#FBF8F2';
 
 export default function PaymentsScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ status?: string; error?: string; paymentId?: string }>();
   const { data: paymentsData, isLoading: paymentsLoading, refetch: refetchPayments } = usePayments(1);
   const { data: profileData, isLoading: profileLoading } = useProfile();
   const { data: duesData, isLoading: duesLoading, refetch: refetchDues } = useDues();
+
+  const [isProcessing, setIsProcessing] = React.useState(false);
 
   const isLoading = paymentsLoading || profileLoading || duesLoading;
   const payments = paymentsData?.data || [];
@@ -33,6 +38,55 @@ export default function PaymentsScreen() {
     refetchPayments();
     refetchDues();
   }, [refetchPayments, refetchDues]);
+
+  React.useEffect(() => {
+    if (params.status === 'success') {
+      alert('Payment Successful!\nYour transaction has been verified successfully.');
+      onRefresh();
+      router.setParams({ status: undefined, paymentId: undefined });
+    } else if (params.status === 'failure') {
+      alert(`Payment Failed!\n${params.error || 'Transaction could not be completed.'}`);
+      router.setParams({ status: undefined, error: undefined });
+    } else if (params.status === 'cancelled') {
+      alert('Payment Cancelled\nYou cancelled the payment process.');
+      router.setParams({ status: undefined });
+    }
+  }, [params.status, params.error, params.paymentId]);
+
+  const handlePayment = async () => {
+    if (balance <= 0 || !profileData?.member) return;
+
+    try {
+      setIsProcessing(true);
+      // 1. Create order on the backend
+      const response = await apiClient.post('/payments/create-order', {
+        amount: balance,
+        type: 'donation',
+        description: 'Pending Dues Payment',
+        paidForId: profileData.member._id,
+        gateway: 'razorpay',
+      });
+
+      const { order, payment } = response.data.data;
+
+      // 2. Build the checkout page URL
+      const backendUrl = 'https://mahallu-backend-clae.onrender.com';
+      const checkoutUrl = `${backendUrl}/api/v1/payments/checkout` +
+        `?orderId=${order.id}` +
+        `&paymentId=${payment._id}` +
+        `&amount=${order.amount}` +
+        `&name=${encodeURIComponent(profileData.member.name || '')}` +
+        `&email=${encodeURIComponent(profileData.user?.email || '')}` +
+        `&phone=${encodeURIComponent(profileData.member.phone || '')}`;
+
+      // 3. Open checkout page in device default browser
+      await Linking.openURL(checkoutUrl);
+    } catch (err: any) {
+      alert(err.message || 'Payment initiation failed');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <SafeAreaView className="flex-1" style={{ backgroundColor: CREAM }} edges={['top']}>
@@ -69,13 +123,14 @@ export default function PaymentsScreen() {
               <Text className="text-4xl font-extrabold mb-6" style={{ color: balance > 0 ? '#DC2626' : '#16A34A' }}>₹{balance}</Text>
               
               <TouchableOpacity 
-                className={`w-full py-4 rounded-2xl items-center flex-row justify-center ${balance > 0 ? '' : 'opacity-50'}`}
-                style={{ backgroundColor: balance > 0 ? GOLD : '#E2E8F0' }}
-                disabled={balance === 0}
+                className={`w-full py-4 rounded-2xl items-center flex-row justify-center ${balance > 0 && !isProcessing ? '' : 'opacity-50'}`}
+                style={{ backgroundColor: balance > 0 && !isProcessing ? GOLD : '#E2E8F0' }}
+                disabled={balance === 0 || isProcessing}
+                onPress={handlePayment}
               >
-                <Ionicons name="card-outline" size={20} color={balance > 0 ? '#FFF' : '#94A3B8'} style={{ marginRight: 8 }} />
-                <Text className={`font-extrabold text-sm ${balance > 0 ? 'text-white' : 'text-slate-500'}`}>
-                  {balance > 0 ? 'Pay Total Outstanding Balance' : 'No Pending Dues'}
+                <Ionicons name="card-outline" size={20} color={balance > 0 && !isProcessing ? '#FFF' : '#94A3B8'} style={{ marginRight: 8 }} />
+                <Text className={`font-extrabold text-sm ${balance > 0 && !isProcessing ? 'text-white' : 'text-slate-500'}`}>
+                  {isProcessing ? 'Processing Payment...' : balance > 0 ? 'Pay Total Outstanding Balance' : 'No Pending Dues'}
                 </Text>
               </TouchableOpacity>
             </View>
