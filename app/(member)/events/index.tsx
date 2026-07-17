@@ -8,6 +8,8 @@ import { LoadingScreen } from '../../../components/ui/LoadingScreen';
 import { EmptyState } from '../../../components/ui/EmptyState';
 import { EventCard } from '../../../components/EventCard';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useLanguageStore } from '../../../lib/store/languageStore';
+import { t } from '../../../lib/i18n';
 
 const TEAL_DARK = '#0B4A42';
 const TEAL = '#0F6B5C';
@@ -16,6 +18,7 @@ const GOLD = '#C9972E';
 
 export default function EventsListScreen() {
   const router = useRouter();
+  const { language } = useLanguageStore();
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
   const { data: events, isLoading, refetch } = useEvents(activeTab);
 
@@ -25,7 +28,7 @@ export default function EventsListScreen() {
         <TouchableOpacity onPress={() => router.back()} className="mr-3 p-1">
           <Ionicons name="arrow-back" size={24} color={TEAL_DARK} />
         </TouchableOpacity>
-        <Text className="text-xl font-bold" style={{ color: TEAL_DARK }}>Events</Text>
+        <Text className="text-xl font-bold" style={{ color: TEAL_DARK }}>{t('eventsTitle', language)}</Text>
       </View>
 
       {/* Tabs */}
@@ -34,13 +37,13 @@ export default function EventsListScreen() {
           className={`flex-1 py-3 items-center rounded-l-full border ${activeTab === 'upcoming' ? 'border-emerald-600 bg-emerald-600' : 'border-slate-300 bg-white'}`}
           onPress={() => setActiveTab('upcoming')}
         >
-          <Text className={`font-bold text-sm ${activeTab === 'upcoming' ? 'text-white' : 'text-slate-500'}`}>Upcoming</Text>
+          <Text className={`font-bold text-sm ${activeTab === 'upcoming' ? 'text-white' : 'text-slate-500'}`}>{t('upcoming', language)}</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           className={`flex-1 py-3 items-center rounded-r-full border border-l-0 ${activeTab === 'past' ? 'border-emerald-600 bg-emerald-600' : 'border-slate-300 bg-white'}`}
           onPress={() => setActiveTab('past')}
         >
-          <Text className={`font-bold text-sm ${activeTab === 'past' ? 'text-white' : 'text-slate-500'}`}>Past Events</Text>
+          <Text className={`font-bold text-sm ${activeTab === 'past' ? 'text-white' : 'text-slate-500'}`}>{t('pastEvents', language)}</Text>
         </TouchableOpacity>
       </View>
 
@@ -51,8 +54,8 @@ export default function EventsListScreen() {
         {isLoading ? null : !events || events.length === 0 ? (
           <EmptyState 
             icon="calendar-clear-outline" 
-            title={`No ${activeTab} events`} 
-            message={`There are no ${activeTab} events scheduled at the moment.`} 
+            title={activeTab === 'upcoming' ? t('noUpcomingEvents', language) : t('noPastEvents', language)} 
+            message={activeTab === 'upcoming' ? t('noUpcomingDesc', language) : t('noPastDesc', language)} 
           />
         ) : (
           <View className="pb-8">

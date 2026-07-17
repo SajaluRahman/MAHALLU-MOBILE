@@ -12,6 +12,8 @@ import dayjs from 'dayjs';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import * as Linking from 'expo-linking';
 import { apiClient } from '../../lib/api';
+import { useLanguageStore } from '../../lib/store/languageStore';
+import { t } from '../../lib/i18n';
 
 const TEAL_DARK = '#0B4A42';
 const TEAL = '#0F6B5C';
@@ -20,6 +22,7 @@ const CREAM = '#FBF8F2';
 
 export default function PaymentsScreen() {
   const router = useRouter();
+  const { language } = useLanguageStore();
   const params = useLocalSearchParams<{ status?: string; error?: string; paymentId?: string }>();
   const { data: paymentsData, isLoading: paymentsLoading, refetch: refetchPayments } = usePayments(1);
   const { data: profileData, isLoading: profileLoading } = useProfile();
@@ -98,7 +101,7 @@ export default function PaymentsScreen() {
         <TouchableOpacity onPress={() => router.back()} className="mr-3 p-1">
           <Ionicons name="arrow-back" size={24} color={TEAL_DARK} />
         </TouchableOpacity>
-        <Text className="text-xl font-bold" style={{ color: TEAL_DARK }}>Payments & Dues</Text>
+        <Text className="text-xl font-bold" style={{ color: TEAL_DARK }}>{t('paymentsTitle', language)}</Text>
       </View>
 
       <ScrollView 
@@ -123,7 +126,7 @@ export default function PaymentsScreen() {
                 <Ionicons name={balance > 0 ? 'alert-circle' : 'checkmark-circle'} size={26} color={balance > 0 ? '#DC2626' : '#16A34A'} />
               </View>
               
-              <Text className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Total Pending Dues</Text>
+              <Text className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">{t('totalPendingDues', language)}</Text>
               <Text className="text-4xl font-extrabold mb-6" style={{ color: balance > 0 ? '#DC2626' : '#16A34A' }}>₹{balance}</Text>
               
               <TouchableOpacity 
@@ -134,7 +137,7 @@ export default function PaymentsScreen() {
               >
                 <Ionicons name="card-outline" size={20} color={balance > 0 && !isProcessing ? '#FFF' : '#94A3B8'} style={{ marginRight: 8 }} />
                 <Text className={`font-extrabold text-sm ${balance > 0 && !isProcessing ? 'text-white' : 'text-slate-500'}`}>
-                  {isProcessing ? 'Processing Payment...' : balance > 0 ? 'Pay Total Outstanding Balance' : 'No Pending Dues'}
+                  {isProcessing ? t('processingPayment', language) : balance > 0 ? t('payTotalBalance', language) : t('noPendingDues', language)}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -143,7 +146,7 @@ export default function PaymentsScreen() {
           {/* Individual Dues List */}
           {dues.length > 0 && (
             <Animated.View entering={FadeInDown.delay(75).springify()} className="mb-8">
-              <Text className="text-slate-800 text-sm font-bold mb-3 px-1">Pending Due Items</Text>
+              <Text className="text-slate-800 text-sm font-bold mb-3 px-1">{t('individualDues', language)}</Text>
               <View className="space-y-3">
                 {dues.map((due: any, idx: number) => (
                   <View 
@@ -156,10 +159,10 @@ export default function PaymentsScreen() {
                       </View>
                       <View>
                         <Text className="text-slate-900 font-extrabold text-sm">
-                          {due.purpose || due.campaign || 'General Due'}
+                          {due.purpose || due.campaign || (language === 'en' ? 'General Due' : 'പൊതുവായ കുടിശ്ശിക')}
                         </Text>
                         <Text className="text-slate-500 text-[11px] mt-0.5">
-                          Added: {dayjs(due.createdAt).format('DD MMM YYYY')}
+                          {language === 'en' ? 'Added:' : 'ചേർത്തത്:'} {dayjs(due.createdAt).format('DD MMM YYYY')}
                         </Text>
                       </View>
                     </View>
@@ -173,7 +176,9 @@ export default function PaymentsScreen() {
           {/* Recurring Config Details */}
           {hasRecurring && (
             <Animated.View entering={FadeInDown.delay(100).springify()} className="mb-8">
-              <Text className="text-slate-800 text-sm font-bold mb-3 px-1">Recurring Plan</Text>
+              <Text className="text-slate-800 text-sm font-bold mb-3 px-1">
+                {language === 'en' ? 'Recurring Plan' : 'ആവർത്തിച്ചുള്ള സംഭാവന'}
+              </Text>
               <View 
                 className="bg-white rounded-[20px] p-4 flex-row items-center justify-between"
                 style={{ shadowColor: '#0f172a', shadowOpacity: 0.05, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 2 }}
@@ -183,27 +188,33 @@ export default function PaymentsScreen() {
                     <Ionicons name="calendar-outline" size={18} color={TEAL} />
                   </View>
                   <View>
-                    <Text className="text-slate-900 font-extrabold capitalize">{family.recurringDonationType} Donation</Text>
-                    <Text className="text-slate-500 text-[11px] mt-0.5">Automated {family.recurringDonationType} billing</Text>
+                    <Text className="text-slate-900 font-extrabold capitalize">
+                      {family.recurringDonationType === 'monthly' ? (language === 'en' ? 'Monthly' : 'പ്രതിമാസം') : (language === 'en' ? 'Yearly' : 'പ്രതിവർഷം')}
+                    </Text>
+                    <Text className="text-slate-500 text-[11px] mt-0.5">
+                      {language === 'en' ? 'Automated billing' : 'സ്വയമേവയുള്ള ബില്ലിംഗ്'}
+                    </Text>
                   </View>
                 </View>
                 <View className="items-end">
                   <Text className="font-extrabold text-base text-slate-800">₹{family.recurringDonationAmount}</Text>
-                  <Text className="text-slate-400 text-[10px] uppercase font-bold">Configured</Text>
+                  <Text className="text-slate-400 text-[10px] uppercase font-bold">
+                    {language === 'en' ? 'Configured' : 'ക്രമീകരിച്ചിരിക്കുന്നു'}
+                  </Text>
                 </View>
               </View>
             </Animated.View>
           )}
 
           {/* Payment History */}
-          <Text className="text-slate-800 text-sm font-bold mb-3 px-1">Received Transactions (History)</Text>
+          <Text className="text-slate-800 text-sm font-bold mb-3 px-1">{t('recentPayments', language)}</Text>
           
           {payments.length === 0 ? (
             <View className="bg-white rounded-[24px] p-8 items-center border border-slate-100">
               <View className="w-16 h-16 rounded-full bg-slate-50 items-center justify-center mb-3">
                 <Ionicons name="receipt-outline" size={32} color="#CBD5E1" />
               </View>
-              <Text className="text-slate-400 font-medium">No payment history found</Text>
+              <Text className="text-slate-400 font-medium">{t('noRecentPayments', language)}</Text>
             </View>
           ) : (
             <View className="space-y-3 mb-8">

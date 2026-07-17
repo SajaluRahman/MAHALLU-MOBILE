@@ -6,17 +6,20 @@ import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/auth.store';
 import { useProfile } from '../../lib/hooks/useProfile';
 import { Avatar } from '../../components/ui/Avatar';
+import { useLanguageStore } from '../../lib/store/languageStore';
+import { t } from '../../lib/i18n';
 
 export default function MoreScreen() {
   const router = useRouter();
+  const { language } = useLanguageStore();
   const { logout } = useAuthStore();
   const { data: profileData } = useProfile();
 
   const handleLogout = () => {
-    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('signOut', language), t('signOutConfirm', language), [
+      { text: t('cancel', language), style: 'cancel' },
       { 
-        text: 'Sign Out', 
+        text: t('signOut', language), 
         style: 'destructive',
         onPress: () => {
           logout();
@@ -28,26 +31,26 @@ export default function MoreScreen() {
 
   const menuSections = [
     {
-      title: 'Account',
+      title: t('account', language),
       items: [
-        { icon: 'person-outline', label: 'Personal Profile', route: null },
-        { icon: 'moon-outline', label: 'My Cemetery Plots', route: '/(member)/cemetery-history' },
-        { icon: 'lock-closed-outline', label: 'Change Password', route: null },
-        { icon: 'notifications-outline', label: 'Notification Settings', route: null },
+        { icon: 'person-outline', label: t('personalProfile', language), route: null },
+        { icon: 'moon-outline', label: t('myCemeteryPlots', language), route: '/(member)/cemetery-history' },
+        { icon: 'lock-closed-outline', label: t('changePassword', language), route: null },
+        { icon: 'notifications-outline', label: t('notificationSettings', language), route: null },
       ]
     },
     {
-      title: 'App Settings',
+      title: t('appSettings', language),
       items: [
-        { icon: 'language-outline', label: 'Language', route: null, value: 'English' },
-        { icon: 'color-palette-outline', label: 'Theme', route: null, value: 'Light' },
+        { icon: 'language-outline', label: t('language', language), route: null, value: language === 'en' ? 'English' : 'മലയാളം' },
+        { icon: 'color-palette-outline', label: t('theme', language), route: null, value: language === 'en' ? 'Light' : 'ലൈറ്റ്' },
       ]
     },
     {
-      title: 'Support',
+      title: t('support', language),
       items: [
-        { icon: 'help-circle-outline', label: 'Help & FAQ', route: null },
-        { icon: 'document-text-outline', label: 'Terms & Privacy', route: null },
+        { icon: 'help-circle-outline', label: t('helpFaq', language), route: null },
+        { icon: 'document-text-outline', label: t('termsPrivacy', language), route: null },
       ]
     }
   ];
@@ -55,7 +58,7 @@ export default function MoreScreen() {
   return (
     <SafeAreaView className="flex-1 bg-slate-50" edges={['top']}>
       <View className="px-5 pt-2 pb-4 border-b border-slate-200 bg-white">
-        <Text className="text-slate-900 text-2xl font-extrabold">Profile</Text>
+        <Text className="text-slate-900 text-2xl font-extrabold">{t('profileTitle', language)}</Text>
       </View>
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
@@ -104,7 +107,7 @@ export default function MoreScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="log-out-outline" size={20} color="#e11d48" />
-            <Text className="text-rose-600 font-bold text-base ml-2">Sign Out</Text>
+            <Text className="text-rose-600 font-bold text-base ml-2">{t('signOut', language)}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

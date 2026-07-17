@@ -92,7 +92,7 @@ export default function CemeteryHistoryScreen() {
             ...data.requests.map(r => ({ type: 'request', data: r })),
           ]}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => {
+          renderItem={({ item }: { item: any }) => {
             if (item.type === 'header') {
               return <Text className="text-slate-800 text-sm font-bold mb-3 mt-2 uppercase tracking-wider">{item.title}</Text>;
             }

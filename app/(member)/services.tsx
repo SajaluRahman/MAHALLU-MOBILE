@@ -4,32 +4,35 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Card } from '../../components/ui/Card';
+import { useLanguageStore } from '../../lib/store/languageStore';
+import { t } from '../../lib/i18n';
 
 export default function ServicesScreen() {
   const router = useRouter();
+  const { language } = useLanguageStore();
 
   const serviceCategories = [
     {
-      title: 'Finance & Dues',
+      title: t('financeAndDues', language),
       items: [
-        { icon: 'card-outline', label: 'Payments', desc: 'Pay dues and fees', route: '/(member)/payments', color: '#10b981', bg: 'bg-emerald-500/20' },
-        { icon: 'heart-outline', label: 'Donations', desc: 'Donate to causes', route: '/(member)/donations', color: '#f43f5e', bg: 'bg-rose-500/20' },
-        { icon: 'wallet-outline', label: 'Zakat', desc: 'Zakat applications', route: '/(member)/coming-soon?title=Zakat', color: '#3b82f6', bg: 'bg-blue-500/20' },
+        { icon: 'card-outline', label: t('paymentsTitle', language), desc: t('paymentsDesc', language), route: '/(member)/payments', color: '#10b981', bg: 'bg-emerald-500/20' },
+        { icon: 'heart-outline', label: t('donations', language), desc: t('donationsDesc', language), route: '/(member)/donations', color: '#f43f5e', bg: 'bg-rose-500/20' },
+        { icon: 'wallet-outline', label: t('zakat', language), desc: t('zakatDesc', language), route: '/(member)/coming-soon?title=Zakat', color: '#3b82f6', bg: 'bg-blue-500/20' },
       ]
     },
     {
-      title: 'Community',
+      title: t('community', language),
       items: [
-        { icon: 'calendar-outline', label: 'Events', desc: 'Upcoming events', route: '/(member)/events', color: '#a855f7', bg: 'bg-purple-500/20' },
-        { icon: 'document-text-outline', label: 'Certificates', desc: 'Request certificates', route: '/(member)/certificates', color: '#f59e0b', bg: 'bg-amber-500/20' },
-        { icon: 'people-outline', label: 'Nikah', desc: 'Marriage registry', route: '/(member)/coming-soon?title=Nikah', color: '#ec4899', bg: 'bg-pink-500/20' },
+        { icon: 'calendar-outline', label: t('eventsTitle', language), desc: t('eventsDesc', language), route: '/(member)/events', color: '#a855f7', bg: 'bg-purple-500/20' },
+        { icon: 'document-text-outline', label: t('certificates', language), desc: t('certificatesDesc', language), route: '/(member)/certificates', color: '#f59e0b', bg: 'bg-amber-500/20' },
+        { icon: 'people-outline', label: t('nikah', language), desc: t('nikahDesc', language), route: '/(member)/coming-soon?title=Nikah', color: '#ec4899', bg: 'bg-pink-500/20' },
       ]
     },
     {
-      title: 'Facilities',
+      title: t('facilities', language),
       items: [
-        { icon: 'business-outline', label: 'Properties', desc: 'Rentals & assets', route: '/(member)/properties', color: '#10b981', bg: 'bg-emerald-500/20' },
-        { icon: 'moon-outline', label: 'Cemetery', desc: 'Burial records', route: '/(member)/cemetery', color: '#71717a', bg: 'bg-zinc-500/20' },
+        { icon: 'business-outline', label: t('properties', language), desc: t('propertiesDesc', language), route: '/(member)/properties', color: '#10b981', bg: 'bg-emerald-500/20' },
+        { icon: 'moon-outline', label: t('cemetery', language), desc: t('cemeteryDesc', language), route: '/(member)/cemetery', color: '#71717a', bg: 'bg-zinc-500/20' },
       ]
     }
   ];
@@ -37,7 +40,7 @@ export default function ServicesScreen() {
   return (
     <SafeAreaView className="flex-1 bg-slate-50" edges={['top']}>
       <View className="px-5 pt-2 pb-4 border-b border-slate-200 bg-white">
-        <Text className="text-slate-900 text-2xl font-extrabold">Services</Text>
+        <Text className="text-slate-900 text-2xl font-extrabold">{t('servicesTitle', language)}</Text>
       </View>
 
       <ScrollView className="flex-1 px-5 pt-4" showsVerticalScrollIndicator={false}>

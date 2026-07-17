@@ -7,6 +7,8 @@ import { ErrorScreen } from '../../components/ui/ErrorScreen';
 import { MemberCard } from '../../components/MemberCard';
 import { Ionicons } from '@expo/vector-icons';
 import QRCode from 'react-native-qrcode-svg';
+import { useLanguageStore } from '../../lib/store/languageStore';
+import { t } from '../../lib/i18n';
 
 // Keep in sync with the home screen's identity.
 const TEAL_DARK = '#0B4A42';
@@ -15,6 +17,7 @@ const GOLD = '#C9972E';
 const CREAM = '#FBF8F2';
 
 export default function FamilyScreen() {
+  const { language } = useLanguageStore();
   const { data: family, isLoading, isError, refetch } = useFamily();
 
   if (isLoading) return <LoadingScreen message="Loading family details..." />;
@@ -27,9 +30,9 @@ export default function FamilyScreen() {
     <SafeAreaView className="flex-1" edges={['top']} style={{ backgroundColor: CREAM }}>
       <View className="px-5 pt-2 pb-4">
         <Text className="text-[11px] font-bold uppercase tracking-wider" style={{ color: TEAL }}>
-          Household
+          {t('household', language)}
         </Text>
-        <Text className="text-slate-900 text-2xl font-extrabold mt-0.5">My Family</Text>
+        <Text className="text-slate-900 text-2xl font-extrabold mt-0.5">{t('myFamily', language)}</Text>
       </View>
 
       <ScrollView
@@ -68,7 +71,7 @@ export default function FamilyScreen() {
             <View className="flex-row items-center">
               <Ionicons name="location-outline" size={13} color="#94a3b8" />
               <Text className="text-slate-500 text-xs ml-1.5" numberOfLines={1}>
-                Ward: {family.wardNo || 'N/A'}
+                {t('ward', language)}: {family.wardNo || 'N/A'}
               </Text>
             </View>
             <View className="flex-row items-center mt-1.5">
@@ -81,20 +84,20 @@ export default function FamilyScreen() {
         </View>
 
         {/* Head of Family */}
-        <SectionLabel icon="ribbon-outline" text="Head of Family" />
+        <SectionLabel icon="ribbon-outline" text={t('headOfFamily', language)} />
         <View className="mb-6 mt-3">
           <MemberCard
             name={headMember.name}
             memberId={headMember.memberId || headMember._id}
             photo={headMember.photo?.url}
             phone={headMember.phone}
-            role="Head"
+            role={language === 'en' ? 'Head' : 'കുടുംബനാഥൻ'}
             compact
           />
         </View>
 
         {/* Family Members */}
-        <SectionLabel icon="people-outline" text={`Family Members (${otherMembers.length})`} />
+        <SectionLabel icon="people-outline" text={`${t('familyMembers', language)} (${otherMembers.length})`} />
         <View className="space-y-3 mb-8 mt-3">
           {otherMembers.map((m: any) => {
             const memberData = m.memberId;
@@ -113,7 +116,7 @@ export default function FamilyScreen() {
           {otherMembers.length === 0 && (
             <View className="bg-white rounded-2xl p-6 items-center justify-center border border-slate-100">
               <Ionicons name="people-outline" size={22} color="#cbd5e1" />
-              <Text className="text-slate-400 text-xs mt-2">No other members added yet</Text>
+              <Text className="text-slate-400 text-xs mt-2">{t('noOtherMembers', language)}</Text>
             </View>
           )}
         </View>
