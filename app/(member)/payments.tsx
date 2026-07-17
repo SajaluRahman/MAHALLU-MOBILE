@@ -69,7 +69,10 @@ export default function PaymentsScreen() {
 
       const { order, payment } = response.data.data;
 
-      // 2. Build the checkout page URL
+      // 2. Generate dynamic deep link redirect URL
+      const redirectUrl = Linking.createURL('/(member)/payments');
+
+      // 3. Build the checkout page URL
       const backendUrl = 'https://mahallu-backend-clae.onrender.com';
       const checkoutUrl = `${backendUrl}/api/v1/payments/checkout` +
         `?orderId=${order.id}` +
@@ -77,9 +80,10 @@ export default function PaymentsScreen() {
         `&amount=${order.amount}` +
         `&name=${encodeURIComponent(profileData.member.name || '')}` +
         `&email=${encodeURIComponent(profileData.user?.email || '')}` +
-        `&phone=${encodeURIComponent(profileData.member.phone || '')}`;
+        `&phone=${encodeURIComponent(profileData.member.phone || '')}` +
+        `&redirectUrl=${encodeURIComponent(redirectUrl)}`;
 
-      // 3. Open checkout page in device default browser
+      // 4. Open checkout page in device default browser
       await Linking.openURL(checkoutUrl);
     } catch (err: any) {
       alert(err.message || 'Payment initiation failed');
