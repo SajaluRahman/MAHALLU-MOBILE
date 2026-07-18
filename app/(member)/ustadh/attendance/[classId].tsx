@@ -82,21 +82,13 @@ export default function MarkAttendanceScreen() {
         <View className="bg-blue-50 p-4 rounded-xl mb-6 flex-row items-start">
           <Ionicons name="information-circle" size={20} color="#3b82f6" />
           <Text className="text-blue-800 text-sm ml-2 flex-1 leading-5">
-            Tap a student to cycle their status. Students left unmarked will automatically be saved as <Text className="font-bold">Present</Text>.
+            Mark attendance using the buttons: Green Tick for Present, Red Cross for Absent, and Yellow Clock for Late.
           </Text>
         </View>
         
         {classData?.students?.map((student: any) => {
           const member = student.memberId;
           const status = attendance[student._id] || 'present';
-          
-          let statusColor = '#10b981'; // present
-          let statusBg = '#dcfce7';
-          let statusLabel = 'Present';
-          
-          if (status === 'absent') { statusColor = '#ef4444'; statusBg = '#fee2e2'; statusLabel = 'Absent'; }
-          if (status === 'late') { statusColor = '#f59e0b'; statusBg = '#fef3c7'; statusLabel = 'Late'; }
-          if (status === 'excused') { statusColor = '#3b82f6'; statusBg = '#dbeafe'; statusLabel = 'Excused'; }
 
           return (
             <View key={student._id} className="bg-white rounded-2xl p-4 mb-3 flex-row items-center border border-slate-100 shadow-sm">
@@ -105,22 +97,58 @@ export default function MarkAttendanceScreen() {
                 <Text className="text-base font-bold text-slate-900" numberOfLines={1}>{member?.name}</Text>
               </View>
               
-              <TouchableOpacity 
-                activeOpacity={0.7}
-                onPress={() => {
-                  const nextStatus: Record<AttendanceStatus, AttendanceStatus> = {
-                    'present': 'absent',
-                    'absent': 'late',
-                    'late': 'excused',
-                    'excused': 'present'
-                  };
-                  toggleStatus(student._id, nextStatus[status]);
-                }}
-                className="px-4 py-2 rounded-xl"
-                style={{ backgroundColor: statusBg }}
-              >
-                <Text className="font-bold text-xs w-16 text-center" style={{ color: statusColor }}>{statusLabel}</Text>
-              </TouchableOpacity>
+              <View className="flex-row items-center gap-2">
+                {/* Present Tick Icon */}
+                <TouchableOpacity 
+                  activeOpacity={0.7}
+                  onPress={() => toggleStatus(student._id, 'present')}
+                  className={`w-9 h-9 rounded-full items-center justify-center border ${
+                    status === 'present' 
+                      ? 'bg-emerald-500 border-emerald-500' 
+                      : 'bg-white border-slate-200'
+                  }`}
+                >
+                  <Ionicons 
+                    name="checkmark" 
+                    size={18} 
+                    color={status === 'present' ? '#fff' : '#10b981'} 
+                  />
+                </TouchableOpacity>
+
+                {/* Absent Cross Icon */}
+                <TouchableOpacity 
+                  activeOpacity={0.7}
+                  onPress={() => toggleStatus(student._id, 'absent')}
+                  className={`w-9 h-9 rounded-full items-center justify-center border ${
+                    status === 'absent' 
+                      ? 'bg-rose-500 border-rose-500' 
+                      : 'bg-white border-slate-200'
+                  }`}
+                >
+                  <Ionicons 
+                    name="close" 
+                    size={18} 
+                    color={status === 'absent' ? '#fff' : '#f43f5e'} 
+                  />
+                </TouchableOpacity>
+
+                {/* Late Clock Icon */}
+                <TouchableOpacity 
+                  activeOpacity={0.7}
+                  onPress={() => toggleStatus(student._id, 'late')}
+                  className={`w-9 h-9 rounded-full items-center justify-center border ${
+                    status === 'late' 
+                      ? 'bg-amber-500 border-amber-500' 
+                      : 'bg-white border-slate-200'
+                  }`}
+                >
+                  <Ionicons 
+                    name="time" 
+                    size={18} 
+                    color={status === 'late' ? '#fff' : '#f59e0b'} 
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
           );
         })}
