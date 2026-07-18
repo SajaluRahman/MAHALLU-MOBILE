@@ -199,20 +199,12 @@ export default function MemberHomeScreen() {
             index={user?.role === 'ustadh' ? 2 : 1}
           />
           <QuickActionItem
-            icon="school"
-            label={t('children', language)}
-            bg="#FFFBEB"
-            iconColor="#D97706"
-            onPress={() => router.push('/(member)/children')}
-            index={user?.role === 'ustadh' ? 3 : 2}
-          />
-          <QuickActionItem
             icon="calendar"
             label={t('events', language)}
             bg="#FAF5FF"
             iconColor="#A855F7"
             onPress={() => router.push('/(member)/events')}
-            index={user?.role === 'ustadh' ? 4 : 3}
+            index={user?.role === 'ustadh' ? 3 : 2}
           />
         </View>
 
