@@ -4,8 +4,8 @@
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "build:android": "eas build --platform android",
     "build:ios": "eas build --platform ios",
     "type-check": "tsc --noEmit",
@@ -14,10 +14,10 @@
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
     "@hookform/resolvers": "^3.9.0",
-    "@react-native-community/datetimepicker": "8.3.0",
     "@mahallu/shared-config": "file:./packages/shared-config",
     "@mahallu/shared-types": "file:./packages/shared-types",
     "@react-native-async-storage/async-storage": "^2.0.0",
+    "@react-native-community/datetimepicker": "8.3.0",
     "@tanstack/react-query": "^5.51.1",
     "axios": "^1.7.2",
     "dayjs": "^1.11.11",
@@ -52,6 +52,7 @@
     "react-native-svg": "15.12.1",
     "react-native-web": "^0.21.0",
     "react-native-worklets": "0.5.1",
+    "socket.io-client": "^4.8.3",
     "tailwindcss": "^3.4.0",
     "zod": "^3.23.8",
     "zustand": "^4.5.4"

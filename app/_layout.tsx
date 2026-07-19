@@ -22,6 +22,8 @@ const lightTheme = {
   colors: { ...MD3LightTheme.colors, primary: ISLAMIC_GREEN, secondary: '#047857' },
 };
 
+import { usePushNotifications } from '../lib/hooks/usePushNotifications';
+
 const darkTheme = {
   ...MD3DarkTheme,
   colors: { ...MD3DarkTheme.colors, primary: ISLAMIC_GREEN, secondary: '#34d399' },
@@ -30,6 +32,9 @@ const darkTheme = {
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
+
+  // Enable real-time sound notifications on notices and events
+  usePushNotifications();
 
   useEffect(() => {
     // Notifications setup removed for Expo Go compatibility

@@ -21,7 +21,8 @@
         "NSCameraUsageDescription": "Used for member photo and document scanning",
         "NSPhotoLibraryUsageDescription": "Used to upload member photos",
         "NSLocationWhenInUseUsageDescription": "Used for family location on map",
-        "NSFaceIDUsageDescription": "Used for biometric login"
+        "NSFaceIDUsageDescription": "Used for biometric login",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
