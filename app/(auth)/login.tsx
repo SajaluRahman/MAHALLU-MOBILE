@@ -36,6 +36,7 @@ export default function LoginScreen() {
       switch (user.role) {
         case 'ustadh':
         case 'parent':
+        case 'sadar_mualim':
           router.replace('/(member)/home');
           break;
         case 'student':
