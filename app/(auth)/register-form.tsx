@@ -108,7 +108,7 @@ export default function RegisterFormScreen() {
     );
   }
 
-  const roleTitle = role === 'MEMBER' ? 'Family Head' : role === 'STUDENT' ? 'Student' : 'Ustad';
+  const roleTitle = role === 'MEMBER' ? 'Family Head' : role === 'SADAR_MUALIM' ? 'Sadar Mualim' : 'Ustad';
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f8fafc' }}>
@@ -229,36 +229,7 @@ export default function RegisterFormScreen() {
             </>
           )}
 
-          {role === 'STUDENT' && (
-            <>
-              <View>
-                <Text style={{ color: '#475569', marginBottom: 8, fontSize: 13, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 }}>Family *</Text>
-                <TouchableOpacity
-                  onPress={fetchFamilies}
-                  style={{ backgroundColor: 'white', borderWidth: 1.5, borderColor: '#e2e8f0', borderRadius: 16, padding: 18, shadowColor: '#94a3b8', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-                >
-                  <Text style={{ color: form.familyId ? '#0f172a' : '#94a3b8', fontSize: 16 }}>
-                    {form.familyId 
-                      ? families.find(f => f._id === form.familyId)?.headName + ' (' + families.find(f => f._id === form.familyId)?.familyCode + ')' 
-                      : 'Select your family'}
-                  </Text>
-                  {fetchingFamilies ? <ActivityIndicator size="small" color="#10b981" /> : <Ionicons name="chevron-down" size={20} color="#94a3b8" />}
-                </TouchableOpacity>
-              </View>
-              <View>
-                <Text style={{ color: '#475569', marginBottom: 8, fontSize: 13, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 }}>Madrasa Class</Text>
-                <TextInput
-                  style={{ backgroundColor: 'white', borderWidth: 1.5, borderColor: '#e2e8f0', borderRadius: 16, padding: 18, color: '#0f172a', fontSize: 16, shadowColor: '#94a3b8', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 1 }}
-                  placeholder="Class (e.g. 5th Standard)"
-                  placeholderTextColor="#94a3b8"
-                  value={form.madrasaClass}
-                  onChangeText={val => updateForm('madrasaClass', val)}
-                />
-              </View>
-            </>
-          )}
-
-          {role === 'TEACHER' && (
+          {(role === 'TEACHER' || role === 'SADAR_MUALIM') && (
             <>
               <View>
                 <Text style={{ color: '#475569', marginBottom: 8, fontSize: 13, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 }}>Qualification</Text>

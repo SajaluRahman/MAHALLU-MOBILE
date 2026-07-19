@@ -13,18 +13,18 @@ const ROLES = [
     color: '#0ea5e9'
   },
   {
-    id: 'STUDENT',
-    title: 'Madrasa Student',
-    description: 'Register as a student to access your attendance, class schedules, and homework.',
-    icon: 'school-outline' as const,
-    color: '#8b5cf6'
-  },
-  {
     id: 'TEACHER',
     title: 'Ustad / Teacher',
     description: 'Register as an Ustad to manage classes, mark attendance, and track student progress.',
     icon: 'book-outline' as const,
     color: '#10b981'
+  },
+  {
+    id: 'SADAR_MUALIM',
+    title: 'Sadar Mualim / Headmaster',
+    description: 'Register as a Sadar Mualim to manage students, classes, and assign students to families.',
+    icon: 'briefcase-outline' as const,
+    color: '#f59e0b'
   }
 ];
 

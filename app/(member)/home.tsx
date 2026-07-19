@@ -182,13 +182,23 @@ export default function MemberHomeScreen() {
               index={0}
             />
           )}
+          {user?.role === 'sadar_mualim' && (
+            <QuickActionItem
+              icon="briefcase"
+              label="Sadar Panel"
+              bg="#FEF3C7"
+              iconColor="#D97706"
+              onPress={() => router.push('/(member)/sadar-panel')}
+              index={0}
+            />
+          )}
           <QuickActionItem
             icon="people"
             label={t('myFamily', language)}
             bg="#EFF6FF"
             iconColor="#3B82F6"
             onPress={() => router.push('/(member)/family')}
-            index={user?.role === 'ustadh' ? 1 : 0}
+            index={(user?.role === 'ustadh' || user?.role === 'sadar_mualim') ? 1 : 0}
           />
           <QuickActionItem
             icon="card"
@@ -196,15 +206,25 @@ export default function MemberHomeScreen() {
             bg="#ECFDF5"
             iconColor="#10B981"
             onPress={() => router.push('/(member)/payments')}
-            index={user?.role === 'ustadh' ? 2 : 1}
+            index={(user?.role === 'ustadh' || user?.role === 'sadar_mualim') ? 2 : 1}
           />
+          {(user?.role === 'parent' || user?.role === 'member') && (
+            <QuickActionItem
+              icon="school"
+              label="Students"
+              bg="#FEF2F2"
+              iconColor="#EF4444"
+              onPress={() => router.push('/(member)/family-students')}
+              index={2}
+            />
+          )}
           <QuickActionItem
             icon="calendar"
             label={t('events', language)}
             bg="#FAF5FF"
             iconColor="#A855F7"
             onPress={() => router.push('/(member)/events')}
-            index={user?.role === 'ustadh' ? 3 : 2}
+            index={(user?.role === 'ustadh' || user?.role === 'sadar_mualim') ? 3 : 3}
           />
         </View>
 
