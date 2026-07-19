@@ -185,7 +185,7 @@ export default function MemberHomeScreen() {
           {user?.role === 'sadar_mualim' && (
             <QuickActionItem
               icon="briefcase"
-              label="Sadar Panel"
+              label={t('sadarPanel', language)}
               bg="#FEF3C7"
               iconColor="#D97706"
               onPress={() => router.push('/(member)/sadar-panel')}
@@ -211,7 +211,7 @@ export default function MemberHomeScreen() {
           {(user?.role === 'parent' || user?.role === 'member') && (
             <QuickActionItem
               icon="school"
-              label="Students"
+              label={t('students', language)}
               bg="#FEF2F2"
               iconColor="#EF4444"
               onPress={() => router.push('/(member)/family-students')}
