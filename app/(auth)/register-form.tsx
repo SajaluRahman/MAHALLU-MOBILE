@@ -216,9 +216,34 @@ export default function RegisterFormScreen() {
                       onChangeText={val => updateFamilyMember(index, 'name', val)}
                     />
                     
+                    <Text style={{ fontSize: 12, fontWeight: '700', color: '#64748b', marginBottom: 6 }}>Relationship to Family Head *</Text>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
+                      {['Son', 'Daughter', 'Child', 'Spouse', 'Father', 'Mother', 'Other'].map(rel => {
+                        const isSelected = member.relationship === rel;
+                        return (
+                          <TouchableOpacity
+                            key={rel}
+                            onPress={() => updateFamilyMember(index, 'relationship', rel)}
+                            style={{
+                              paddingHorizontal: 12,
+                              paddingVertical: 6,
+                              borderRadius: 16,
+                              backgroundColor: isSelected ? TEAL : 'white',
+                              borderWidth: 1,
+                              borderColor: isSelected ? TEAL : '#cbd5e1',
+                            }}
+                          >
+                            <Text style={{ fontSize: 12, fontWeight: '600', color: isSelected ? 'white' : '#475569' }}>
+                              {rel}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      })}
+                    </View>
+
                     <TextInput
-                      style={{ backgroundColor: 'white', borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 12, padding: 14, color: '#0f172a', fontSize: 15, marginBottom: 12 }}
-                      placeholder="Relationship (e.g. Spouse, Child)"
+                      style={{ backgroundColor: 'white', borderWidth: 1, borderColor: '#cbd5e1', borderRadius: 12, padding: 12, color: '#0f172a', fontSize: 14 }}
+                      placeholder="Or enter specific relationship (e.g. Son)"
                       placeholderTextColor="#94a3b8"
                       value={member.relationship}
                       onChangeText={val => updateFamilyMember(index, 'relationship', val)}
